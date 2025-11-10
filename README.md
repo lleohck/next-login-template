@@ -1,8 +1,33 @@
-Next.js project template with pre-built login form with e-mail validation
+# Como usar esse Starter
 
+## criar novo projeto
 
-Usage 
-`npm install`
+```bash
+npx degit <seu-user>/<repo-starter> nome-projeto-novo
+cd nome-projeto-novo
+npm i
+```
 
-`npx prisma migrate`
-`npx prisma generate`
+## onde programar
+
+* **core/** → nao mexer (auth, prisma, emails)
+* **app/(feature)/** → aqui vc cria as features reais do projeto
+
+## coisas pra trocar sempre que criar um novo projeto
+
+1. logo
+2. textos / copyright
+3. cores tema (tailwind)
+
+## checklist
+
+* [ ] trocar o nome do projeto em `package.json`
+* [ ] apontar os dominios no `.env`
+* [ ] configurar provider de email
+
+## regra
+
+se precisar evoluir o core (ex: melhorar fluxo de email verify)
+→ editar no repo do starter e nao no projeto
+
+isso mantém o starter vivo e atualizado.

@@ -13,7 +13,7 @@ export async function POST(request: Request) {
   });
 
   if (existing && existing.emailVerifiedAt) {
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ error: "Email já cadastrado" }, { status: 400 });
   }
 
   let user = existing;

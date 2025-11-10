@@ -28,7 +28,7 @@ export const authOptions = {
         if (!valid) return null;
 
         if (!user.emailVerifiedAt) {
-          return null;
+          throw new Error("EMAIL_NOT_VERIFIED");
         }
 
         return { id: user.id, email: user.email };

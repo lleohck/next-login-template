@@ -4,6 +4,9 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toastError, toastSuccess } from "@/lib/toast";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -12,6 +15,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Toast de email verificado via query param
   useState(() => {
@@ -22,6 +26,7 @@ export default function LoginPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
+    setErrorMessage(null);
 
     const res = await signIn("credentials", {
       email,
@@ -33,9 +38,9 @@ export default function LoginPage() {
 
     if (res?.error) {
       if (res.error === "EMAIL_NOT_VERIFIED") {
-        toastError("Você precisa verificar seu email antes de logar!");
+        setErrorMessage("Você precisa verificar seu email antes de logar!");
       } else {
-        toastError("Email ou senha inválidos");
+        setErrorMessage("Email ou senha inválidos");
       }
     } else {
       toastSuccess("Login efetuado!");
@@ -61,43 +66,51 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
       <form
-        className="w-full max-w-md bg-white p-8 rounded-lg shadow-md space-y-6"
         onSubmit={handleSubmit}
+        className="w-full max-w-md bg-white p-8 rounded-lg shadow-md space-y-6"
       >
         <h2 className="text-2xl font-bold text-center">Login</h2>
 
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        />
-        <input
-          type="password"
-          placeholder="Senha"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        />
+        {errorMessage && (
+          <div className="text-red-600 text-sm font-medium bg-red-100 p-2 rounded">
+            {errorMessage}
+          </div>
+        )}
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 disabled:opacity-50"
-        >
+        <div className="space-y-2">
+          <Label>Email</Label>
+          <Input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="seu@email.com"
+            required
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label>Senha</Label>
+          <Input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Digite sua senha"
+            required
+          />
+        </div>
+
+        <Button type="submit" className="w-full" disabled={loading}>
           {loading ? "Entrando..." : "Entrar"}
-        </button>
+        </Button>
 
-        <button
+        <Button
           type="button"
+          variant="outline"
+          className="w-full"
           onClick={handleResendEmail}
-          className="w-full text-center text-sm text-blue-600 hover:underline"
         >
           Reenviar email de verificação
-        </button>
+        </Button>
 
         <p className="text-center text-sm text-gray-500">
           Não tem conta?{" "}

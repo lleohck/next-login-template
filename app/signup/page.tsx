@@ -3,6 +3,9 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toastError, toastSuccess } from "@/lib/toast";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -11,15 +14,26 @@ export default function SignupPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [canSubmit, setCanSubmit] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState(0);
 
-  // validação: senha e confirmação devem coincidir
+  // calcular força da senha
   useEffect(() => {
+    let strength = 0;
+    if (password.length >= 8) strength += 1;
+    if (/[A-Z]/.test(password)) strength += 1;
+    if (/[0-9]/.test(password)) strength += 1;
+    if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+    setPasswordStrength(strength);
+
     setCanSubmit(
       password.length >= 8 &&
         password === confirmPassword &&
         email.includes("@")
     );
   }, [email, password, confirmPassword]);
+
+  // sugestão de senha segura
+  const suggestedPassword = "Abcd1234!";
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -48,55 +62,80 @@ export default function SignupPage() {
     }
   }
 
+  function renderPasswordStrength() {
+    const colors = [
+      "bg-red-500",
+      "bg-orange-500",
+      "bg-yellow-400",
+      "bg-green-500",
+    ];
+    return (
+      <div className="h-2 w-full bg-gray-200 rounded mt-1">
+        <div
+          className={`h-2 rounded ${
+            colors[passwordStrength - 1] || "bg-gray-200"
+          }`}
+          style={{ width: `${(passwordStrength / 4) * 100}%` }}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
       <form
-        onSubmit={handleSubmit}
         className="w-full max-w-md bg-white p-8 rounded-lg shadow-md space-y-6"
+        onSubmit={handleSubmit}
       >
         <h2 className="text-2xl font-bold text-center">Criar Conta</h2>
 
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
-          required
-        />
+        <div className="space-y-2">
+          <Label>Email</Label>
+          <Input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="seu@email.com"
+            required
+          />
+        </div>
 
-        <input
-          type="password"
-          placeholder="Senha"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
-          required
-        />
+        <div className="space-y-2">
+          <Label>Senha</Label>
+          <Input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Digite sua senha"
+            required
+          />
+          {renderPasswordStrength()}
+          <p className="text-sm text-gray-500">
+            Sugestão: <span className="font-mono">{suggestedPassword}</span>
+          </p>
+        </div>
 
-        <input
-          type="password"
-          placeholder="Confirmar senha"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          className={`w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 ${
-            confirmPassword && confirmPassword !== password
-              ? "focus:ring-red-500 border-red-500"
-              : "focus:ring-green-500 border-gray-300"
-          }`}
-          required
-        />
-        {confirmPassword && confirmPassword !== password && (
-          <p className="text-red-500 text-sm">As senhas não coincidem</p>
-        )}
+        <div className="space-y-2">
+          <Label>Confirmar senha</Label>
+          <Input
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            placeholder="Repita a senha"
+            required
+          />
+          {confirmPassword && confirmPassword !== password && (
+            <p className="text-red-500 text-sm">As senhas não coincidem</p>
+          )}
+        </div>
 
-        <button
+        <Button
           type="submit"
-          disabled={loading || !canSubmit}
-          className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600 disabled:opacity-50"
+          className="w-full"
+          disabled={!canSubmit || loading}
         >
           {loading ? "Criando..." : "Criar conta"}
-        </button>
+        </Button>
 
         <p className="text-center text-sm text-gray-500">
           Já tem conta?{" "}

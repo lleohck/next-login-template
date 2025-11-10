@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -17,7 +18,6 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // Toast de email verificado via query param
   useState(() => {
     const verified = searchParams.get("verified");
     if (verified === "1") toastSuccess("Email verificado com sucesso!");
@@ -67,17 +67,28 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-md bg-white p-8 rounded-lg shadow-md space-y-6"
+        className="w-full max-w-md bg-white p-8 rounded-lg shadow-md space-y-6 flex flex-col items-center"
       >
+        {/* Logo */}
+        <div className="mb-4">
+          <Image
+            src="/images/logo.jpg"
+            alt="Abstergo Logo"
+            width={120}
+            height={120}
+            className="object-contain"
+          />
+        </div>
+
         <h2 className="text-2xl font-bold text-center">Login</h2>
 
         {errorMessage && (
-          <div className="text-red-600 text-sm font-medium bg-red-100 p-2 rounded">
+          <div className="text-red-600 text-sm font-medium bg-red-100 p-2 rounded w-full text-center">
             {errorMessage}
           </div>
         )}
 
-        <div className="space-y-2">
+        <div className="space-y-2 w-full">
           <Label>Email</Label>
           <Input
             type="email"
@@ -88,7 +99,7 @@ export default function LoginPage() {
           />
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-2 w-full">
           <Label>Senha</Label>
           <Input
             type="password"

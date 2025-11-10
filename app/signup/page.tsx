@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toastError, toastSuccess } from "@/lib/toast";
@@ -16,7 +17,6 @@ export default function SignupPage() {
   const [canSubmit, setCanSubmit] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(0);
 
-  // calcular força da senha
   useEffect(() => {
     let strength = 0;
     if (password.length >= 8) strength += 1;
@@ -32,7 +32,6 @@ export default function SignupPage() {
     );
   }, [email, password, confirmPassword]);
 
-  // sugestão de senha segura
   const suggestedPassword = "Abcd1234!";
 
   async function handleSubmit(e: React.FormEvent) {
@@ -84,12 +83,23 @@ export default function SignupPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
       <form
-        className="w-full max-w-md bg-white p-8 rounded-lg shadow-md space-y-6"
         onSubmit={handleSubmit}
+        className="w-full max-w-md bg-white p-8 rounded-lg shadow-md space-y-6 flex flex-col items-center"
       >
+        {/* Logo */}
+        <div className="mb-4">
+          <Image
+            src="/images/logo.jpg"
+            alt="Abstergo Logo"
+            width={120}
+            height={120}
+            className="object-contain"
+          />
+        </div>
+
         <h2 className="text-2xl font-bold text-center">Criar Conta</h2>
 
-        <div className="space-y-2">
+        <div className="space-y-2 w-full">
           <Label>Email</Label>
           <Input
             type="email"
@@ -100,7 +110,7 @@ export default function SignupPage() {
           />
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-2 w-full">
           <Label>Senha</Label>
           <Input
             type="password"
@@ -115,7 +125,7 @@ export default function SignupPage() {
           </p>
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-2 w-full">
           <Label>Confirmar senha</Label>
           <Input
             type="password"

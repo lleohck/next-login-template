@@ -1,0 +1,31 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Next Dev",
+      "type": "shell",
+      "command": "npm run dev",
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Prisma Database",
+      "type": "shell",
+      "command": "npx prisma dev",
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Prisma Studio",
+      "type": "shell",
+      "command": "npx prisma studio",
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Start All",
+      "dependsOn": ["Next Dev", "Prisma Database", "Prisma Studio"],
+      "dependsOrder": "parallel"
+    }
+  ]
+}

@@ -26,9 +26,11 @@ export const authOptions = {
           user.passwordHash
         );
         if (!valid) return null;
-
-        if (!user.emailVerifiedAt) {
-          throw new Error("EMAIL_NOT_VERIFIED");
+        
+        if (process.env.IS_VERIFIED_EMAIL_MANDATORY === "true"){
+          if (!user.emailVerifiedAt) {
+            throw new Error("EMAIL_NOT_VERIFIED");
+          }
         }
 
         return { id: user.id, email: user.email };

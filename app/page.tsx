@@ -1,19 +1,30 @@
-import Image from "next/image";
+"use client";
+
+import { Button } from "@/components/ui/button";
+import { useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 
 export default function Home() {
+  const { data: session, status } = useSession();
+
+  if (status === "loading") return <p>Carregando...</p>;
+  if (!session) return <p>Você não está logado</p>;
+
+  async function handleSignOut() {
+    await signOut();
+  }
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        Hellow World!
-      </main>
+    <div>
+      <h1>Bem-vindo, {session.user?.email}</h1>
+      <Button
+        type="button"
+        variant="outline"
+        className="w-3"
+        onClick={handleSignOut}
+      >
+        Sair
+      </Button>
     </div>
   );
 }

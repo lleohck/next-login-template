@@ -18,7 +18,7 @@ export const authOptions = {
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
         });
-        
+
         if (!user) return null;
 
         const valid = await bcrypt.compare(
@@ -26,20 +26,19 @@ export const authOptions = {
           user.passwordHash
         );
         if (!valid) return null;
-        
-        if (process.env.IS_VERIFIED_EMAIL_MANDATORY === "true"){
+
+        if (process.env.IS_VERIFIED_EMAIL_MANDATORY === "true") {
           if (!user.emailVerifiedAt) {
             throw new Error("EMAIL_NOT_VERIFIED");
           }
         }
 
         return { id: user.id, email: user.email };
-
       },
     }),
   ],
   pages: {
     signIn: "/login",
   },
-  session: { strategy: "jwt" as const },
+  session: { strategy: "jwt" as const }
 };

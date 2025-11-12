@@ -1,31 +1,12 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import bcrypt from "bcrypt";
 import { Resend } from "resend";
+import { signup } from "@/app/actions/signup";
 
 export async function POST(request: Request) {
-  const { email, password } = await request.json();
+  const { name, email, password } = await request.json();
 
-  const existing = await prisma.user.findUnique({
-    where: { email },
-  });
-
-  if (existing && existing.emailVerifiedAt) {
-    return NextResponse.json({ error: "Email já cadastrado" }, { status: 400 });
-  }
-
-  let user = existing;
-
-  if (!user) {
-    const hash = await bcrypt.hash(password, 10);
-
-    user = await prisma.user.create({
-      data: {
-        email,
-        passwordHash: hash,
-      },
-    });
-  }
+  await signup({ name, email, password });
 
   const token = crypto.randomUUID();
 

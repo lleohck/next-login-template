@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 
 export default function SignupPage() {
   const router = useRouter();
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -44,7 +45,7 @@ export default function SignupPage() {
       const res = await fetch("/api/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ name, email, password }),
       });
       const data = await res.json();
       setLoading(false);
@@ -98,6 +99,17 @@ export default function SignupPage() {
         </div>
 
         <h2 className="text-2xl font-bold text-center">Criar Conta</h2>
+
+        <div className="space-y-2 w-full">
+          <Label>Nome</Label>
+          <Input
+            type="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Joao Silva"
+            required
+          />
+        </div>
 
         <div className="space-y-2 w-full">
           <Label>Email</Label>
